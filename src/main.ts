@@ -1,8 +1,9 @@
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
+import { CustomValidationPipe } from './shared/pipes';
 
 async function bootstrap() {
   const URL_CLIENT = process.env.URL_CLIENT;
@@ -12,17 +13,7 @@ async function bootstrap() {
   });
 
   const config = app.get(ConfigService);
-
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-      forbidNonWhitelisted: false,
-      transformOptions: {
-        enableImplicitConversion: true,
-      },
-    }),
-  );
+  app.useGlobalPipes(new CustomValidationPipe());
 
   const PORT = config.get('PORT');
   const URL_API = config.get('URL_API');
