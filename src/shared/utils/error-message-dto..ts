@@ -15,6 +15,7 @@ export const parseErrorMessageDTO = (error: any): string => {
     isNumber: `${property} must be a number value`,
     isBoolean: `${property} must be a boolean value`,
     isOptional: `${property} is optional`,
+    whitelistValidation: `${property} is not allowed to have any additional properties`,
     matches: `${error.constraints.matches}`,
   };
 

@@ -7,27 +7,21 @@ export type UserDocument = User & Document;
 @Schema()
 export class User implements IUser {
   @Prop({ required: true })
-  id: string;
-
-  @Prop({ required: true })
   uid: string;
 
   @Prop({ required: true })
   email: string;
 
-  @Prop({ required: true })
-  password: string;
-
-  @Prop({ required: true })
+  @Prop({ required: true, uppercase: true })
   name: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, uppercase: true })
   lastName: string;
 
   @Prop({ default: Date.now })
   createdAt: Date;
 
-  @Prop({ default: Date.now })
+  @Prop({ default: Date.now, type: Date })
   updatedAt: Date;
 
   @Prop({ default: null })

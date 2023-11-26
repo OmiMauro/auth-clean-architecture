@@ -37,4 +37,26 @@ export class AuthService {
       );
     }
   }
+  async signIn({ body }: { body: dto.SignInDTO }): Promise<any> {
+    const { email, password } = body;
+    try {
+      const existUser: User | null = await this.userRepository.findOne({ email });
+
+      if (!existUser) {
+        throw new BadRequestException('The user does not exist');
+      }
+      const { accessToken, refreshToken } = await this.authProviderService.signInWithEmail({
+        email,
+        password,
+      });
+
+      return { user: existUser, accessToken, refreshToken };
+    } catch (error) {
+      Logger.error(error, 'AuthService.signIn --- Error signing in');
+      throw new HttpException(
+        error.message || 'Internal server error',
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
