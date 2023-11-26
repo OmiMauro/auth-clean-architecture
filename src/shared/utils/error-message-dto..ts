@@ -15,6 +15,7 @@ export const parseErrorMessageDTO = (error: any): string => {
     isNumber: `${property} must be a number value`,
     isBoolean: `${property} must be a boolean value`,
     isOptional: `${property} is optional`,
+    matches: `${error.constraints.matches}`,
   };
 
   // Return the custom error message if available, otherwise, use a generic message
