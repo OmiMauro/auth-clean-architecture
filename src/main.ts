@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
+import { ResponseInterceptor } from './shared/interceptors';
 import { CustomValidationPipe } from './shared/pipes';
 
 async function bootstrap() {
@@ -13,7 +14,10 @@ async function bootstrap() {
   });
 
   const config = app.get(ConfigService);
+
   app.useGlobalPipes(new CustomValidationPipe());
+  app.useGlobalInterceptors(new ResponseInterceptor());
+  app.setGlobalPrefix('/api/v1');
 
   const PORT = config.get('PORT');
   const URL_API = config.get('URL_API');
