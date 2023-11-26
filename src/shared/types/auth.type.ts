@@ -1,5 +1,6 @@
+import { User } from 'firebase/auth';
 export type AuthResponse = {
-  user: unknown;
+  user: User;
   accessToken: string;
   refreshToken: string;
 };
