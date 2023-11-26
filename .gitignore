@@ -37,3 +37,9 @@ lerna-debug.log*
 # firebase
 
 firebase-sdk.json
+
+# env files
+.env
+.env.local
+.env.development
+.env.production
