@@ -7,11 +7,7 @@ export class AuthController {
 
   @Post('/sign-up')
   async signUp(@Body() body: dto.CreateUserDTO): Promise<any> {
-    try {
-      const user = await this.authService.signUp({ body });
-      return user;
-    } catch (error) {
-      throw error;
-    }
+    const user = await this.authService.signUp({ body });
+    return user;
   }
 }
