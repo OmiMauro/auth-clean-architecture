@@ -18,8 +18,11 @@ export const parseErrorMessageDTO = (error: any): string => {
     whitelistValidation: `${property} is not allowed to have any additional properties`,
     matches: `${error.constraints.matches}`,
   };
-
   // Return the custom error message if available, otherwise, use a generic message
 
-  return customErrorMessages[constraintKey] || `${property} is invalid`;
+  return (
+    customErrorMessages[constraintKey] ||
+    `${error.constraints[constraintKey]}` ||
+    `${property} is invalid`
+  );
 };
