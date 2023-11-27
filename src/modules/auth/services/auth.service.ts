@@ -2,6 +2,7 @@ import { BadRequestException, HttpException, HttpStatus, Injectable, Logger } fr
 import { AuthProviderServices } from 'src/shared/abstracts/auth.interface';
 import * as dto from 'src/shared/dtos';
 import { User } from 'src/shared/entities';
+import { IAuthResponse } from 'src/shared/interfaces';
 import { UserRepository } from 'src/shared/repositories';
 @Injectable()
 export class AuthService {
@@ -10,7 +11,7 @@ export class AuthService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async signUp({ body }: { body: dto.CreateUserDTO }): Promise<any> {
+  async signUp({ body }: { body: dto.CreateUserDTO }): Promise<IAuthResponse> {
     const { email, password, name, lastName } = body;
     try {
       const existUser: User | null = await this.userRepository.findOne({ email });
@@ -37,7 +38,7 @@ export class AuthService {
       );
     }
   }
-  async signIn({ body }: { body: dto.SignInDTO }): Promise<any> {
+  async signIn({ body }: { body: dto.SignInDTO }): Promise<IAuthResponse> {
     const { email, password } = body;
     try {
       const existUser: User | null = await this.userRepository.findOne({ email });

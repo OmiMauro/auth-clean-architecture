@@ -7,13 +7,23 @@ export class AuthController {
 
   @Post('/sign-up')
   async signUp(@Body() body: dto.CreateUserDTO): Promise<any> {
-    const user = await this.authService.signUp({ body });
-    return user;
+    const { accessToken, refreshToken, user } = await this.authService.signUp({ body });
+    return {
+      ...user,
+      accessToken,
+      refreshToken,
+      meta: { message: 'User created successfully' },
+    };
   }
 
   @Post('/sign-in')
   async signIn(@Body() body: dto.SignInDTO): Promise<any> {
-    const user = await this.authService.signIn({ body });
-    return user;
+    const { accessToken, refreshToken, user } = await this.authService.signIn({ body });
+    return {
+      ...user,
+      accessToken,
+      refreshToken,
+      meta: { message: 'User created successfully' },
+    };
   }
 }

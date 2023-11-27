@@ -5,7 +5,7 @@ import { IUser } from '../interfaces';
 export type UserDocument = User & Document;
 
 @Schema()
-export class User implements IUser {
+export class User extends Document implements IUser {
   @Prop({ required: true })
   uid: string;
 
