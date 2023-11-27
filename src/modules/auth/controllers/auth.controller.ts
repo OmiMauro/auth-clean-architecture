@@ -7,11 +7,11 @@ export class AuthController {
 
   @Post('/sign-up')
   async signUp(@Body() body: dto.CreateUserDTO): Promise<any> {
-    const { accessToken, refreshToken, user } = await this.authService.signUp({ body });
+    const { user } = await this.authService.signUp({ body });
+    // TODO: send email verification using a queue system like bull
+    //  const link = await this.authService.createVerifyEmailLink({ email: user.email });
     return {
       ...user,
-      accessToken,
-      refreshToken,
       meta: { message: 'User created successfully' },
     };
   }
@@ -25,5 +25,21 @@ export class AuthController {
       refreshToken,
       meta: { message: 'User created successfully' },
     };
+  }
+  @Post('/recover-password')
+  async recoverPassword(@Body() body: dto.RecoverPasswordDTO): Promise<any> {
+    const link = await this.authService.recoverPassword({ body });
+    console.log(link);
+    // TODO: send email verification using a queue system like bull
+  }
+  @Post('/verify-email')
+  async verifyEmail(@Body() body: dto.VerifyEmailDTO): Promise<any> {
+    await this.authService.verifyEmail({ body });
+    return { meta: { message: 'The email was verified.' } };
+  }
+  @Post('/reset-password')
+  async resetPassword(@Body() body: dto.ResetPasswordDTO): Promise<any> {
+    await this.authService.resetPassword({ body });
+    return { meta: { message: 'The password was changed' } };
   }
 }

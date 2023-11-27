@@ -4,8 +4,10 @@ import { ConfigService } from '@nestjs/config';
 import admin from 'firebase-admin';
 
 import {
+  ActionCodeSettings,
   Auth,
   UserCredential,
+  applyActionCode,
   createUserWithEmailAndPassword,
   getAuth,
   signInWithEmailAndPassword,
@@ -75,14 +77,11 @@ export class FirebaseService implements AuthProviderServices, OnApplicationBoots
     password: string;
   }): Promise<AuthResponse> {
     try {
-      console.log(email, password);
-
       const userCredential: UserCredential = await createUserWithEmailAndPassword(
         this.auth,
         email,
         password,
       );
-
       const accessToken: string = await userCredential.user.getIdToken();
 
       return {
@@ -113,5 +112,36 @@ export class FirebaseService implements AuthProviderServices, OnApplicationBoots
       accessToken,
       refreshToken: userCredential.user.refreshToken,
     };
+  }
+  async recoverPassword({ email }: { email: string }): Promise<string> {
+    try {
+      const link = await admin.auth().generatePasswordResetLink(email);
+      return link;
+    } catch (error) {
+      const httpError = this.firebaseErrorService.handleFirebaseError(error.code);
+      throw httpError;
+    }
+  }
+
+  async verifyEmail({ code }: { code: string }): Promise<void> {
+    try {
+      await applyActionCode(this.auth, code);
+    } catch (error) {
+      const httpError = this.firebaseErrorService.handleFirebaseError(error.code);
+      throw httpError;
+    }
+  }
+  async resetPassword({ code, password }: { code: string; password: string }): Promise<void> {
+    // TODO: implement this method
+    console.log(code, password);
+  }
+
+  async createVerifyEmailLink({ email }: { email: string }): Promise<string> {
+    const actionCodeSettings: ActionCodeSettings = {
+      url: `${this.configService.get('URL_CLIENT')}/auth/verify-email`,
+      handleCodeInApp: true,
+    };
+    const link = await admin.auth().generateEmailVerificationLink(email, actionCodeSettings);
+    return link;
   }
 }
