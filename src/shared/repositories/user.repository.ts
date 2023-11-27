@@ -9,7 +9,9 @@ export class UserRepository implements IUserRepository {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async findOne(conditions: any): Promise<User | null> {
-    return this.userModel.findOne(conditions).exec();
+    const user = await this.userModel.findOne(conditions).exec();
+    if (!user) return null;
+    return user.toObject();
   }
 
   async findById(id: string): Promise<User | null> {
@@ -21,16 +23,21 @@ export class UserRepository implements IUserRepository {
       .skip((page - 1) * limit)
       .limit(limit)
       .exec();
-    return users;
+    return users.map((user) => user.toObject());
   }
 
   async create({ uid, email, name, lastName }: any): Promise<User | null> {
-    return this.userModel.create({
+    const user = await this.userModel.create({
       uid,
       email,
       name,
       lastName,
     });
+    if (!user) return null;
+    if (Array.isArray(user) && user.length > 0) {
+      return user[0].toObject() as User;
+    }
+    return user.toObject();
   }
 
   async updateById({ id, data }: { id: string; data }): Promise<User | null> {
