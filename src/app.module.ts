@@ -1,9 +1,11 @@
+import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule, UserModule } from './modules';
 import { AuthProviderModule } from './services';
 import { configuration } from './shared/config/configuration';
+import { EMAIL_QUEUE } from './shared/constants';
 
 @Module({
   imports: [
@@ -17,6 +19,15 @@ import { configuration } from './shared/config/configuration';
     AuthProviderModule,
     AuthModule,
     UserModule,
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
+    BullModule.registerQueue({
+      name: EMAIL_QUEUE,
+    }),
   ],
   controllers: [],
   providers: [],
